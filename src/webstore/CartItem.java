@@ -10,7 +10,15 @@ public class CartItem
 
     public boolean isEmpty()
     {
-        return true;
+        if (product != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+
     }
 
     public Product getProduct()
@@ -23,13 +31,16 @@ public class CartItem
         return this.units;
     }
 
-    public void addProduct(String productName, int units)
+    public void addProduct(Product product, int units)
     {
-        if (units > 0)
+        if ((units > 0) && (product.hasInStock(units)))
         {
-            this.product = new Product();
-            product.setName(productName);
             this.units = units;
+            this.product = product;
+        }
+        else if (!product.hasInStock(units))
+        {
+            throw new NotEnoughtStockForProduct();
         }
     }
 
@@ -43,9 +54,18 @@ public class CartItem
 
     public void removeUnits(int units)
     {
-        if (product != null && units >= 0)
+        if (this.units <= units)
+        {
+            this.product = null;
+        }
+        else if (product != null && units >= 0)
         {
             this.units -= units;
         }
+    }
+
+    public class NotEnoughtStockForProduct extends RuntimeException
+    {
+
     }
 }

@@ -1,3 +1,5 @@
+package webstore;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,11 +12,14 @@ public class CartItemTest
 {
 
     public CartItem cartItem;
+    public Product product;
 
     @Before
     public void setUp() throws Exception
     {
         cartItem = new CartItem();
+        product = new Product();
+        product.addUnits(20);
     }
 
     @Test
@@ -38,35 +43,36 @@ public class CartItemTest
     @Test
     public void productCanBeAddedToCartItem()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
+        product.setName("Banana Caturra");
         Assert.assertEquals("Banana Caturra", cartItem.getProduct().getName());
     }
 
     @Test
     public void productUnitsCanBeAddedToTheProduct()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
         Assert.assertEquals(10, cartItem.getUnits());
     }
 
     @Test
     public void productUnitsCannotBeEqualZeroWhenProductIsAdded()
     {
-        cartItem.addProduct("Banana Caturra", 0);
+        cartItem.addProduct(product, 0);
         Assert.assertEquals(null, cartItem.getProduct());
     }
 
     @Test
     public void productUnitsCannotBeBelowZeroWhenProductIsAdded()
     {
-        cartItem.addProduct("Banana Caturra", -2);
+        cartItem.addProduct(product, -2);
         Assert.assertEquals(null, cartItem.getProduct());
     }
 
     @Test
     public void unitsCanBeAdded()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
         cartItem.addUnits(10);
         Assert.assertEquals(20, cartItem.getUnits());
     }
@@ -74,7 +80,7 @@ public class CartItemTest
     @Test
     public void unitsCanBeRemoved()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
         cartItem.removeUnits(4);
         Assert.assertEquals(6, cartItem.getUnits());
     }
@@ -96,7 +102,7 @@ public class CartItemTest
     @Test
     public void productUnitsCannotBeBelowZeroWhenUnitsAreAdded()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
         cartItem.addUnits(-8);
         Assert.assertEquals(10, cartItem.getUnits());
     }
@@ -104,22 +110,35 @@ public class CartItemTest
     @Test
     public void productUnitsCannotBeBelowZeroWhenUnitsAreRemoved()
     {
-        cartItem.addProduct("Banana Caturra", 10);
+        cartItem.addProduct(product, 10);
         cartItem.removeUnits(-5);
         Assert.assertEquals(10, cartItem.getUnits());
     }
 
+    @Test
+    public void cartItemIsNotEmptyIfItHasAProduct()
+    {
+        cartItem.addProduct(product, 10);
+        Assert.assertFalse(cartItem.isEmpty());
+    }
+
+    @Test
+    public void cartItemCannotHaveProductWithZeroUnitsWhenRemovingUnits_productIsDeleted()
+    {
+        cartItem.addProduct(product, 10);
+        cartItem.removeUnits(10);
+        Assert.assertNull(cartItem.getProduct());
+    }
+
+    @Test (expected = CartItem.NotEnoughtStockForProduct.class)
+    public void cartItemTestsProductStockBeforeAddingProduct()
+    {
+        cartItem.addProduct(product, 25);
+    }
 
 
-    //initialCartItemIsEmpty - Product = null, units = 0.0 *
-    //productCanBeAddedToCartItem
-    //unitsCanBeAdded
-    //unitsCanBeRemoved
-    //unitsCanBeReturned
-    //cartItemIsNotEmptyIfItHasAProduct
     //cartItemCanReturnProduct
     //cartItemCanReturnUnitsOfProduct
-    //cartItemCannotHaveProductWithZeroUnits
     //cartItemCanReturnItsTotalPrice
     //cartItemCanReturnItsNumberOfProductUnits
     //cartItemMustTestIfProductHasUnitsInStock
