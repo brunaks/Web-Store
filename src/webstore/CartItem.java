@@ -46,9 +46,19 @@ public class CartItem
 
     public void addUnits(int units)
     {
-        if (product != null && units >= 0)
+        if (product != null)
         {
-            this.units += units;
+            if (units >= 0)
+            {
+                if (product.hasInStock(this.units + units))
+                {
+                    this.units += units;
+                }
+                else {
+                    throw new NotEnoughtStockForProduct();
+                }
+            }
+
         }
     }
 

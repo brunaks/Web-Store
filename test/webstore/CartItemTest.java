@@ -136,6 +136,13 @@ public class CartItemTest
         cartItem.addProduct(product, 25);
     }
 
+    @Test (expected = CartItem.NotEnoughtStockForProduct.class)
+    public void cartItemTestsProductStockBeforeAddingUnits()
+    {
+        cartItem.addProduct(product, 10);
+        cartItem.addUnits(20);
+    }
+
 
     //cartItemCanReturnProduct
     //cartItemCanReturnUnitsOfProduct
