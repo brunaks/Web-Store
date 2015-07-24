@@ -6,19 +6,13 @@ package webstore;
 public class CartItem
 {
     private Product product;
-    private int     units;
+    private int quantity;
 
-    public boolean isEmpty()
+    public CartItem(Product product, int quantity)
     {
-        if (product != null)
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-
+        testProductStock(product, quantity);
+        this.product = product;
+        this.quantity = quantity;
     }
 
     public Product getProduct()
@@ -26,56 +20,59 @@ public class CartItem
         return this.product;
     }
 
-    public int getUnits()
+    public int getQuantity()
     {
-        return this.units;
+        return this.quantity;
     }
 
-    public void addProduct(Product product, int units)
+    public void addProduct(Product product, int quantity)
     {
-        if ((units > 0) && (product.hasInStock(units)))
+        if ((quantity > 0))
         {
-            this.units = units;
+            testProductStock(product, quantity);
+            this.quantity = quantity;
             this.product = product;
         }
-        else if (!product.hasInStock(units))
-        {
-            throw new NotEnoughtStockForProduct();
-        }
     }
 
-    public void addUnits(int units)
+    public void addQuantity(int quantity)
     {
         if (product != null)
         {
-            if (units >= 0)
+            if (quantity >= 0)
             {
-                if (product.hasInStock(this.units + units))
-                {
-                    this.units += units;
-                }
-                else {
-                    throw new NotEnoughtStockForProduct();
-                }
+                testProductStock(product, this.quantity + quantity);
+                this.quantity += quantity;
             }
-
         }
     }
 
-    public void removeUnits(int units)
+    public void removeQuantity(int quantity)
     {
-        if (this.units <= units)
+        if (this.quantity <= quantity)
         {
             this.product = null;
         }
-        else if (product != null && units >= 0)
+        else if (product != null && quantity >= 0)
         {
-            this.units -= units;
+            this.quantity -= quantity;
         }
+    }
+
+    public double getTotalPrice() {
+        return this.product.getPrice() * this.quantity;
     }
 
     public class NotEnoughtStockForProduct extends RuntimeException
     {
 
+    }
+
+    public void testProductStock(Product product, int quantity)
+    {
+        if (!product.hasInStock(quantity))
+        {
+            throw new NotEnoughtStockForProduct();
+        }
     }
 }
