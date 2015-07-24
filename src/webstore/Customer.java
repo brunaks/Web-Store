@@ -3,11 +3,10 @@ package webstore;
 /**
  * Created by I848075 on 09/07/2015.
  */
-public class Customer extends Entity
-{
+public class Customer extends Entity {
 
     private String name;
-    private Cart   cart;
+    private Cart cart;
 
     public Customer() {
         super();
@@ -23,8 +22,7 @@ public class Customer extends Entity
         this.name = name;
     }
 
-    public Cart getCart()
-    {
+    public Cart getCart() {
         return this.cart;
     }
 }

@@ -10,21 +10,18 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by I848075 on 09/07/2015.
  */
-public class CustomerTest extends EntityTest
-{
+public class CustomerTest extends EntityTest {
 
     private Customer customer;
 
     @Before
-    public void setUp() throws Exception
-    {
+    public void setUp() throws Exception {
         customer = new Customer();
         super.setUp();
     }
 
     @Test
-    public void initialNameIsBlank()
-    {
+    public void initialNameIsBlank() {
 
         String name = customer.getName();
         assertEquals("", name);
@@ -32,8 +29,7 @@ public class CustomerTest extends EntityTest
     }
 
     @Test
-    public void nameCanBeChanged()
-    {
+    public void nameCanBeChanged() {
         customer.setName("Bruna");
         String name = customer.getName();
         assertEquals("Bruna", name);
@@ -41,15 +37,13 @@ public class CustomerTest extends EntityTest
     }
 
     @Test
-    public void initialCartIsEmpty()
-    {
+    public void initialCartIsEmpty() {
         assertTrue(customer.getCart().isEmpty());
     }
 
 
     @Override
-    protected Entity getEntity()
-    {
+    protected Entity getEntity() {
         return this.customer;
     }
 }
