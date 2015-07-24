@@ -23,11 +23,32 @@ public class Cart {
     }
 
     public void addItem(Product product, int quantity) {
+        isProductAlreadyInTheCart(product);
         CartItem item = new CartItem(product, quantity);
         this.items.add(item);
     }
 
-    public int getQuantityOfProduct(String productName) {
-        return 10;
+    private void isProductAlreadyInTheCart(Product product)
+    {
+        for (int i = 0; i < this.items.size(); i++)
+        {
+            if (this.items.get(i).getProduct() == product)
+            {
+                throw new ItemIsAlreadyInTheCart();
+            }
+        }
+    }
+
+    public void removeProduct(Product product) {
+        for (int i = 0; i < this.items.size(); i++)
+        {
+            if (this.items.get(i).getProduct() == product)
+            {
+                this.items.remove(i);
+            }
+        }
+    }
+
+    public class ItemIsAlreadyInTheCart extends RuntimeException {
     }
 }

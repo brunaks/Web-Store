@@ -47,7 +47,7 @@ public class CartItem {
         return this.product.getPrice() * this.quantity;
     }
 
-    public void testProductStock(Product product, int quantity) {
+    private void testProductStock(Product product, int quantity) {
         if (!product.hasInStock(quantity)) {
             throw new NotEnoughtStockForProduct();
         }

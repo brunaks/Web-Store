@@ -37,6 +37,7 @@ public class CartTest {
         cart.addItem(product, 10);
         Assert.assertEquals("Banana Caturra", cart.getCartItems().get(0).getProduct().getName());
         Assert.assertEquals(10, cart.getCartItems().get(0).getQuantity());
+        Assert.assertEquals(1, cart.getCartItems().size());
 
     }
 
@@ -55,10 +56,11 @@ public class CartTest {
         products.add(product2);
         Assert.assertEquals(products.get(0).getName(), cart.getCartItems().get(0).getProduct().getName());
         Assert.assertEquals(products.get(1).getName(), cart.getCartItems().get(1).getProduct().getName());
+        Assert.assertEquals(2, cart.getCartItems().size());
     }
 
     @Test
-    public void cartMustReturnProductAndQuantity()
+    public void cartMustReturnProductAndQuantityofProduct()
     {
         product.setName("Banana");
         product.setPrice(15.00);
@@ -69,15 +71,48 @@ public class CartTest {
     }
 
     @Test
-    public void productQuantityCanBeRemovedFromTheCart() {
+    public void cartMustReturnProductAndQuantityOfProducts()
+    {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
 
+        Product product2 = new Product();
+        product2.setName("Maçã");
+        product2.setPrice(20.00);
+        product2.addUnits(20);
+        cart.addItem(product2, 15);
+
+        Assert.assertEquals("Banana", cart.getCartItems().get(0).getProduct().getName());
+        Assert.assertEquals(10, cart.getCartItems().get(0).getQuantity());
+
+        Assert.assertEquals("Maçã", cart.getCartItems().get(1).getProduct().getName());
+        Assert.assertEquals(15, cart.getCartItems().get(1).getQuantity());
     }
 
+    @Test (expected = Cart.ItemIsAlreadyInTheCart.class)
+    public void cartCannotHaveTwoItensWithTheSameProduct()
+    {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
+        cart.addItem(product, 15);
+    }
 
-    //noRepeatedProducts
-    //productIsAddedToCartItem
-    //cartCanReturnUnitsOfAProduct *
-    //cartCanReturnItsListOfProducts
+    @Test
+    public void itemCanBeRemovedFromCart()
+    {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
+        Assert.assertEquals(1, cart.getCartItems().size());
+        cart.removeProduct(product);
+        Assert.assertEquals(0, cart.getCartItems().size());
+    }
+
     //productCanBeRemovedFromTheCart
     //cartCanBeEmptied
     //mustCheckIfThereIsEnoughStockWhenAProductIsAddedToTheCart
