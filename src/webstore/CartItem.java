@@ -26,14 +26,6 @@ public class CartItem {
         return this.quantity;
     }
 
-    public void addProduct(Product product, int quantity) {
-        if ((quantity > 0)) {
-            testProductStock(product, quantity);
-            this.quantity = quantity;
-            this.product = product;
-        }
-    }
-
     public void addQuantity(int quantity) {
         if (product != null) {
             if (quantity >= 0) {
@@ -68,4 +60,5 @@ public class CartItem {
     public class quantityShouldBeGreaterThanZero extends RuntimeException {
 
     }
+
 }

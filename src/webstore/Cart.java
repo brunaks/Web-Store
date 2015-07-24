@@ -7,6 +7,13 @@ import java.util.ArrayList;
  */
 public class Cart {
 
+    private ArrayList<CartItem> items = new ArrayList<CartItem>();
+
+    public ArrayList<CartItem> getCartItems()
+    {
+        return this.items;
+    }
+
     public boolean isEmpty() {
         return true;
     }
@@ -15,14 +22,12 @@ public class Cart {
         return 0;
     }
 
-    public void addProduct(String productName, int units) {
-
+    public void addItem(Product product, int quantity) {
+        CartItem item = new CartItem(product, quantity);
+        this.items.add(item);
     }
 
-    public int getUnitsOfProduct(String productName) {
+    public int getQuantityOfProduct(String productName) {
         return 10;
     }
 }
-
-
-//itemDoCarrinho
