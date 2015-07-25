@@ -15,11 +15,16 @@ public class Cart {
     }
 
     public boolean isEmpty() {
-        return true;
+        return this.items.isEmpty();
     }
 
     public double getTotalPrice() {
-        return 0;
+        int totalPrice = 0;
+        for (int i = 0; i < this.items.size(); i++)
+        {
+            totalPrice += this.items.get(i).getTotalPrice();
+        }
+        return totalPrice;
     }
 
     public void addItem(Product product, int quantity) {
@@ -47,6 +52,14 @@ public class Cart {
                 this.items.remove(i);
             }
         }
+    }
+
+    public int getNumberOfItens() {
+        return this.items.size();
+    }
+
+    public void emptyCart() {
+        this.items.clear();
     }
 
     public class ItemIsAlreadyInTheCart extends RuntimeException {

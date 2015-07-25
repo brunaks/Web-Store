@@ -42,8 +42,7 @@ public class CartTest {
     }
 
     @Test
-    public void itemsCanBeAddedToTheCart()
-    {
+    public void itemsCanBeAddedToTheCart() {
         Product product2 = new Product();
         product.setName("Banana Caturra");
         product.addUnits(20);
@@ -60,8 +59,7 @@ public class CartTest {
     }
 
     @Test
-    public void cartMustReturnProductAndQuantityofProduct()
-    {
+    public void cartMustReturnProductAndQuantityofProduct() {
         product.setName("Banana");
         product.setPrice(15.00);
         product.addUnits(15);
@@ -71,8 +69,7 @@ public class CartTest {
     }
 
     @Test
-    public void cartMustReturnProductAndQuantityOfProducts()
-    {
+    public void cartMustReturnProductAndQuantityOfProducts() {
         product.setName("Banana");
         product.setPrice(15.00);
         product.addUnits(15);
@@ -91,9 +88,8 @@ public class CartTest {
         Assert.assertEquals(15, cart.getCartItems().get(1).getQuantity());
     }
 
-    @Test (expected = Cart.ItemIsAlreadyInTheCart.class)
-    public void cartCannotHaveTwoItensWithTheSameProduct()
-    {
+    @Test(expected = Cart.ItemIsAlreadyInTheCart.class)
+    public void cartCannotHaveTwoItensWithTheSameProduct() {
         product.setName("Banana");
         product.setPrice(15.00);
         product.addUnits(15);
@@ -102,8 +98,7 @@ public class CartTest {
     }
 
     @Test
-    public void itemCanBeRemovedFromCart()
-    {
+    public void itemCanBeRemovedFromCart() {
         product.setName("Banana");
         product.setPrice(15.00);
         product.addUnits(15);
@@ -113,15 +108,66 @@ public class CartTest {
         Assert.assertEquals(0, cart.getCartItems().size());
     }
 
-    //productCanBeRemovedFromTheCart
-    //cartCanBeEmptied
-    //mustCheckIfThereIsEnoughStockWhenAProductIsAddedToTheCart
-    //removingProductsThatAreNotInTheCartMustNotThrowException
-    //cartIsNoLongerEmptyIfTheCartHasAnyAmountOfProductUnits
-    //cartCannotHaveNegativeAmountOfProductUnits
-    //cartCannotHaveZeroAmountOfProductUnits
-    //cartIsEmptyIfAllProductsWereRemoved
-    //cartCanReturnItsTotalPrice
+    @Test
+    public void cartCanBeEmptied() {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
 
+        Product product2 = new Product();
+        product2.setName("Maçã");
+        product2.setPrice(20.00);
+        product2.addUnits(20);
+        cart.addItem(product2, 15);
+
+        Assert.assertEquals(2, cart.getNumberOfItens());
+        cart.emptyCart();
+        Assert.assertEquals(0, cart.getNumberOfItens());
+    }
+
+    @Test
+    public void cartIsNoLongerEmptyIfItHasAnyItem() {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
+
+        Assert.assertFalse(cart.isEmpty());
+    }
+
+    @Test
+    public void cartIsEmptyIfAllProductsWereRemoved() {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
+
+        Product product2 = new Product();
+        product2.setName("Maçã");
+        product2.setPrice(20.00);
+        product2.addUnits(20);
+        cart.addItem(product2, 15);
+
+        Assert.assertFalse(cart.isEmpty());
+        cart.emptyCart();
+        Assert.assertTrue(cart.isEmpty());
+    }
+
+    @Test
+    public void cartCanReturnItsTotalPrice() {
+        product.setName("Banana");
+        product.setPrice(15.00);
+        product.addUnits(15);
+        cart.addItem(product, 10);
+
+        Product product2 = new Product();
+        product2.setName("Maçã");
+        product2.setPrice(20.00);
+        product2.addUnits(20);
+        cart.addItem(product2, 15);
+
+        Assert.assertEquals(450.0, cart.getTotalPrice(), 0.001);
+    }
 
 }
