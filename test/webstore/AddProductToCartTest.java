@@ -50,7 +50,6 @@ public class AddProductToCartTest {
     private static class FakeRepository implements Repository {
 
         private Customer storedCustomer;
-        private Cart storedCart;
 
         @Override
         public Customer getCustomerById(String id) {
