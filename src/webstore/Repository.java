@@ -5,6 +5,10 @@ package webstore;
  */
 public interface Repository {
 
-    Customer getCustomerById(String id);
     void saveCustomer(Customer customer);
+    void saveProduct(Product product);
+    Customer getCustomerById(String id);
+    Product getProductById(String productId);
+    int getQuantityByProductId(String productId);
+    void saveQuantity(int quantity);
 }

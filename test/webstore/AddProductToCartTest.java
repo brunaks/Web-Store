@@ -1,6 +1,7 @@
 package webstore;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -8,48 +9,53 @@ import org.junit.Test;
  */
 public class AddProductToCartTest {
 
-    private FakeRepository repository;
-    private Customer michel;
+    private FakeRepository repository = new FakeRepository();
+    AddProductToCart useCase;
 
-    @Test
-    public void addZeroProductsAndGetPrice() {
-        michel = new Customer();
-        michel.setName("Michel");
-        repository = new FakeRepository();
-        repository.saveCustomer(michel);
-
-        Assert.assertTrue(michel.getCart().isEmpty());
-        Assert.assertEquals(repository.getCustomerById(michel.getId()).getId(), michel.getId());
-        Assert.assertEquals(0.0, michel.getCart().getTotalPrice(), 0.001);
+    @Before
+    public void setup()
+    {
+        useCase = new AddProductToCart(this.repository);
+        this.populateFakeRepository();
     }
 
+    private void populateFakeRepository() {
+        Customer customer = new Customer();
+        customer.setId("customer0001");
+
+        Product product = new Product();
+        product.addUnits(30);
+        product.setPrice(10.00);
+    }
 
     @Test
-    public void addOneProductAndGetPrice() {
-        michel = new Customer();
-        michel.setName("Michel");
-        repository = new FakeRepository();
-        repository.saveCustomer(michel);
+    public void hasRepository()
+    {
+        Assert.assertNotNull(useCase.getRepository());
+    }
 
-        Assert.assertTrue(michel.getCart().isEmpty());
-        Assert.assertEquals(repository.getCustomerById(michel.getId()).getId(), michel.getId());
-        Assert.assertEquals(0.0, michel.getCart().getTotalPrice(), 0.001);
+    @Test
+    public void addOneProductAndGetPrice()
+    {
 
-        Product banana = new Product();
-        banana.addUnits(20);
-        banana.setName("Banana");
-        banana.setPrice(2.00);
-        michel.getCart().addItem(banana, 10);
+        useCase.setCustomer("customer0001");
+        Assert.assertEquals("customer0001", useCase.getCustomerId());
 
-        Assert.assertFalse(michel.getCart().isEmpty());
-        Assert.assertEquals(repository.getCustomerById(michel.getId()).getId(), michel.getId());
-        Assert.assertEquals(20.0, michel.getCart().getTotalPrice(), 0.001);
+        useCase.setProductAndQuantity("product0001", 10);
+        Assert.assertEquals("product0001", useCase.getProductId());
+        Assert.assertEquals(10, useCase.getQuantity());
+
+        useCase.execute();
+
 
     }
+
 
     private static class FakeRepository implements Repository {
 
         private Customer storedCustomer;
+        private Product storedProduct;
+        public int storedQuantity;
 
         @Override
         public Customer getCustomerById(String id) {
@@ -65,7 +71,37 @@ public class AddProductToCartTest {
             this.storedCustomer = customer;
         }
 
+        @Override
+        public void saveProduct(Product product) {
+            this.storedProduct = product;
+        }
+
+        @Override
+        public Product getProductById(String productId) {
+            return this.storedProduct;
+        }
+
+        @Override
+        public int getQuantityByProductId(String productId) {
+            if (productId == this.storedProduct.getId()) {
+                return this.storedQuantity;
+            }
+            else
+            {
+                throw new ProductNotFound();
+            }
+        }
+
+        @Override
+        public void saveQuantity(int quantity) {
+            this.storedQuantity = quantity;
+        }
+
         public class CustomerNotFound extends RuntimeException {
+
+        }
+
+        public class ProductNotFound extends RuntimeException {
 
         }
     }

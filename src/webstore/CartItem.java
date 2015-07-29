@@ -6,14 +6,16 @@ package webstore;
 public class CartItem {
     private Product product;
     private int quantity;
+    private Cart cart;
 
-    public CartItem(Product product, int quantity) {
+    public CartItem(Cart cart, Product product, int quantity) {
         if (quantity > 0) {
             testProductStock(product, quantity);
+            this.cart = cart;
             this.product = product;
             this.quantity = quantity;
+            this.product.removeUnits(quantity);
         } else {
-
             throw new quantityShouldBeGreaterThanZero();
         }
     }
@@ -29,17 +31,19 @@ public class CartItem {
     public void addQuantity(int quantity) {
         if (product != null) {
             if (quantity >= 0) {
-                testProductStock(product, this.quantity + quantity);
+                testProductStock(product, quantity);
                 this.quantity += quantity;
+                this.product.removeUnits(quantity);
             }
         }
     }
 
     public void removeQuantity(int quantity) {
         if (this.quantity <= quantity) {
-            this.product = null;
-        } else if (product != null && quantity >= 0) {
+            this.cart.removeProduct(product);
+        } else if (quantity >= 0) {
             this.quantity -= quantity;
+            product.addUnits(quantity);
         }
     }
 

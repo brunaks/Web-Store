@@ -29,7 +29,7 @@ public class Cart {
 
     public void addItem(Product product, int quantity) {
         isProductAlreadyInTheCart(product);
-        CartItem item = new CartItem(product, quantity);
+        CartItem item = new CartItem(this, product, quantity);
         this.items.add(item);
     }
 

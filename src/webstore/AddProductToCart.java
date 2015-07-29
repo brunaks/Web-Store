@@ -8,9 +8,56 @@ import org.junit.Test;
  */
 public class AddProductToCart {
 
-    private Customer customer;
-    private Product banana;
-    private Product chocolate;
     private Repository repository;
+    private String customerId;
+    private String productId;
+    private int quantity;
+    private boolean successful;
 
+    public AddProductToCart(Repository repository)
+    {
+        this.repository = repository;
+    }
+
+    public Repository getRepository()
+    {
+        return this.repository;
+    }
+
+    public boolean execute() {
+
+        Customer customer = repository.getCustomerById(customerId);
+        Product product = repository.getProductById(productId);
+
+        try
+        {
+            customer.getCart().addItem(product, this.quantity);
+            return this.successful = true;
+        }
+        catch (CartItem.NotEnoughtStockForProduct)
+        {
+            this.successful = false;
+        }
+    }
+
+    public void setCustomer(String customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setProductAndQuantity(String productId, int quantity) {
+        this.productId = productId;
+        this.quantity = quantity;
+    }
+
+    public String getCustomerId() {
+        return this.customerId;
+    }
+
+    public String getProductId() {
+        return this.productId;
+    }
+
+    public int getQuantity() {
+        return this.quantity;
+    }
 }
