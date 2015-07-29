@@ -34,9 +34,9 @@ public class AddProductToCart {
             customer.getCart().addItem(product, this.quantity);
             return this.successful = true;
         }
-        catch (CartItem.NotEnoughtStockForProduct)
+        catch (CartItem.NotEnoughtStockForProduct e)
         {
-            this.successful = false;
+            return this.successful = false;
         }
     }
 

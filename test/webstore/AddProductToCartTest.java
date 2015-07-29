@@ -22,10 +22,14 @@ public class AddProductToCartTest {
     private void populateFakeRepository() {
         Customer customer = new Customer();
         customer.setId("customer0001");
+        repository.saveCustomer(customer);
 
         Product product = new Product();
         product.addUnits(30);
         product.setPrice(10.00);
+        product.setId("product0001");
+        repository.saveProduct(product);
+
     }
 
     @Test
@@ -55,11 +59,11 @@ public class AddProductToCartTest {
 
         private Customer storedCustomer;
         private Product storedProduct;
-        public int storedQuantity;
+        //public int storedQuantity;
 
         @Override
         public Customer getCustomerById(String id) {
-            if (storedCustomer.getId() == id) {
+            if (storedCustomer.getId().equalsIgnoreCase(id)) {
                 return storedCustomer;
             } else {
                 throw new CustomerNotFound();
@@ -78,23 +82,11 @@ public class AddProductToCartTest {
 
         @Override
         public Product getProductById(String productId) {
-            return this.storedProduct;
-        }
-
-        @Override
-        public int getQuantityByProductId(String productId) {
-            if (productId == this.storedProduct.getId()) {
-                return this.storedQuantity;
-            }
-            else
-            {
+            if (productId.equalsIgnoreCase(this.storedProduct.getId())) {
+                return this.storedProduct;
+            } else {
                 throw new ProductNotFound();
             }
-        }
-
-        @Override
-        public void saveQuantity(int quantity) {
-            this.storedQuantity = quantity;
         }
 
         public class CustomerNotFound extends RuntimeException {
