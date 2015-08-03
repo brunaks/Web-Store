@@ -49,7 +49,11 @@ public class Product extends Entity
 
     public void setPrice(double price)
     {
-        this.price = price;
+        if (price >= 0.0) {
+            this.price = price;
+        } else {
+            throw new priceMustNotBeANegativeNumber();
+        }
     }
 
     public boolean hasInStock(int units)
@@ -80,5 +84,9 @@ public class Product extends Entity
         {
             this.units -= units;
         }
+    }
+
+    public class priceMustNotBeANegativeNumber extends RuntimeException{
+
     }
 }

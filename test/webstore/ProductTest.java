@@ -115,13 +115,9 @@ public class ProductTest extends EntityTest
         Assert.assertFalse(product.hasInStock(11));
     }
 
-
-
-
-
-
-
-
-
-
+    @Test (expected = Product.priceMustNotBeANegativeNumber.class)
+    public void productPriceCannotBeBelowZero()
+    {
+        product.setPrice(-10.0);
+    }
 }

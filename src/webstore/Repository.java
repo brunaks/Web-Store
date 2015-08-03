@@ -9,4 +9,12 @@ public interface Repository {
     void saveProduct(Product product);
     Customer getCustomerById(String id);
     Product getProductById(String productId);
+
+    class CustomerNotFound extends RuntimeException {
+
+    }
+
+    class ProductNotFound extends RuntimeException {
+
+    }
 }

@@ -4,18 +4,21 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
  * Created by Bruna Koch Schmitt on 26/07/2015.
  */
 public class AddProductToCartTest {
 
     private FakeRepository repository = new FakeRepository();
-    AddProductToCart useCase;
+    AddProductToCart addToCart;
+    ReadCustomersCart readCart;
 
     @Before
-    public void setup()
-    {
-        useCase = new AddProductToCart(this.repository);
+    public void setup() {
+        addToCart = new AddProductToCart(this.repository);
+        readCart = new ReadCustomersCart(this.repository);
         this.populateFakeRepository();
     }
 
@@ -30,43 +33,53 @@ public class AddProductToCartTest {
         product.setId("product0001");
         repository.saveProduct(product);
 
+        Product product2 = new Product();
+        product2.addUnits(20);
+        product2.setPrice(20.00);
+        product2.setId("product0002");
+        repository.saveProduct(product2);
+
     }
 
     @Test
-    public void hasRepository()
-    {
-        Assert.assertNotNull(useCase.getRepository());
+    public void addOneProductAndGetPrice_SameCustomer() {
+
+        addToCart.setCustomer("customer0001");
+        addToCart.setProductAndQuantity("product0001", 10);
+        addToCart.execute();
+
+        readCart.setCustomer("customer0001");
+        Assert.assertEquals(100.0, readCart.getTotalPrice(), 0.001);
     }
 
     @Test
-    public void addOneProductAndGetPrice()
-    {
+    public void addTwoProductsAndGetPrice_SameCustomer() {
+        addToCart.setCustomer("customer0001");
+        addToCart.setProductAndQuantity("product0001", 10);
+        addToCart.execute();
 
-        useCase.setCustomer("customer0001");
-        Assert.assertEquals("customer0001", useCase.getCustomerId());
+        AddProductToCart addToCart2;
+        addToCart2 = new AddProductToCart(this.repository);
+        addToCart2.setCustomer("customer0001");
+        addToCart2.setProductAndQuantity("product0002", 15);
+        addToCart2.execute();
 
-        useCase.setProductAndQuantity("product0001", 10);
-        Assert.assertEquals("product0001", useCase.getProductId());
-        Assert.assertEquals(10, useCase.getQuantity());
-
-        useCase.execute();
-
-
+        readCart.setCustomer("customer0001");
+        Assert.assertEquals(400.00, readCart.getTotalPrice(), 0.001);
     }
 
 
     private static class FakeRepository implements Repository {
 
         private Customer storedCustomer;
-        private Product storedProduct;
-        //public int storedQuantity;
+        private ArrayList<Product> storedProducts = new ArrayList<Product>();
 
         @Override
         public Customer getCustomerById(String id) {
             if (storedCustomer.getId().equalsIgnoreCase(id)) {
                 return storedCustomer;
             } else {
-                throw new CustomerNotFound();
+                throw new Repository.CustomerNotFound();
             }
         }
 
@@ -77,24 +90,17 @@ public class AddProductToCartTest {
 
         @Override
         public void saveProduct(Product product) {
-            this.storedProduct = product;
+            this.storedProducts.add(product);
         }
 
         @Override
         public Product getProductById(String productId) {
-            if (productId.equalsIgnoreCase(this.storedProduct.getId())) {
-                return this.storedProduct;
-            } else {
-                throw new ProductNotFound();
+            for (int i = 0; i < storedProducts.size(); i++) {
+                if (productId.equalsIgnoreCase(this.storedProducts.get(i).getId())) {
+                    return this.storedProducts.get(i);
+                }
             }
-        }
-
-        public class CustomerNotFound extends RuntimeException {
-
-        }
-
-        public class ProductNotFound extends RuntimeException {
-
+            throw new Repository.ProductNotFound();
         }
     }
 }

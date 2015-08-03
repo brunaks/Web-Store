@@ -1,8 +1,5 @@
 package webstore;
 
-import org.junit.Assert;
-import org.junit.Test;
-
 /**
  * Created by Bruna Koch Schmitt on 24/07/2015.
  */
@@ -13,6 +10,8 @@ public class AddProductToCart {
     private String productId;
     private int quantity;
     private boolean successful;
+    private Customer customer;
+    private Product product;
 
     public AddProductToCart(Repository repository)
     {
@@ -25,39 +24,58 @@ public class AddProductToCart {
     }
 
     public boolean execute() {
+        return productIsAddedToCart();
+    }
 
-        Customer customer = repository.getCustomerById(customerId);
-        Product product = repository.getProductById(productId);
-
-        try
-        {
-            customer.getCart().addItem(product, this.quantity);
+    private boolean productIsAddedToCart() {
+        try {
+            customer.getCart().addItem(this.product, this.quantity);
+            repository.saveCustomer(customer);
             return this.successful = true;
         }
-        catch (CartItem.NotEnoughtStockForProduct e)
-        {
+        catch (CartItem.NotEnoughtStockForProduct e) {
             return this.successful = false;
+        }
+    }
+
+    private boolean productIsInRepository() {
+        try {
+            this.product = repository.getProductById(this.productId);
+            return true;
+        } catch (Repository.ProductNotFound e) {
+            return false;
+        }
+    }
+
+    private boolean customerIsInRepository() {
+        try {
+            this.customer = repository.getCustomerById(this.customerId);
+            return true;
+        }catch (Repository.CustomerNotFound e){
+            return false;
         }
     }
 
     public void setCustomer(String customerId) {
         this.customerId = customerId;
+        if (!customerIsInRepository()) {
+            sendErrorThatCustomerWasNotFound();
+        }
+    }
+
+    private void sendErrorThatCustomerWasNotFound() {
     }
 
     public void setProductAndQuantity(String productId, int quantity) {
         this.productId = productId;
+        if (!productIsInRepository()) {
+            sendErrorThatProductWasNotFound();
+        }
         this.quantity = quantity;
     }
 
-    public String getCustomerId() {
-        return this.customerId;
+    private void sendErrorThatProductWasNotFound() {
     }
 
-    public String getProductId() {
-        return this.productId;
-    }
 
-    public int getQuantity() {
-        return this.quantity;
-    }
 }
