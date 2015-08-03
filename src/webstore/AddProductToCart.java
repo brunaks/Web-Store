@@ -77,5 +77,4 @@ public class AddProductToCart {
     private void sendErrorThatProductWasNotFound() {
     }
 
-
 }

@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 /**
  * Created by Bruna Koch Schmitt on 26/07/2015.
  */
@@ -16,7 +14,7 @@ public class AddProductToCartTest {
     ReadCustomersCart readCart;
 
     @Before
-    public void setup() {
+    public void setUp() throws Exception{
         addToCart = new AddProductToCart(this.repository);
         readCart = new ReadCustomersCart(this.repository);
         this.populateFakeRepository();
@@ -91,40 +89,11 @@ public class AddProductToCartTest {
         Assert.assertEquals(200.0, readCart.getTotalPrice(), 0.001);
     }
 
-
-    private static class FakeRepository implements Repository {
-
-        private ArrayList<Customer> storedCustomers = new ArrayList<Customer>();
-        private ArrayList<Product> storedProducts = new ArrayList<Product>();
-
-        @Override
-        public Customer getCustomerById(String id) {
-            for (int i = 0; i < this.storedCustomers.size(); i++) {
-                if (storedCustomers.get(i).getId().equalsIgnoreCase(id)) {
-                    return this.storedCustomers.get(i);
-                }
-            }
-            throw new Repository.CustomerNotFound();
-        }
-
-        @Override
-        public void saveCustomer(Customer customer) {
-            this.storedCustomers.add(customer);
-        }
-
-        @Override
-        public void saveProduct(Product product) {
-            this.storedProducts.add(product);
-        }
-
-        @Override
-        public Product getProductById(String productId) {
-            for (int i = 0; i < storedProducts.size(); i++) {
-                if (productId.equalsIgnoreCase(this.storedProducts.get(i).getId())) {
-                    return this.storedProducts.get(i);
-                }
-            }
-            throw new Repository.ProductNotFound();
-        }
+    @Test
+    public void addProduct_NotEnoughInStock() {
+        addToCart.setCustomer("customer0001");
+        addToCart.setProductAndQuantity("product0001", 10);
+        addToCart.execute();
     }
+
 }
