@@ -27,6 +27,10 @@ public class AddProductToCartTest {
         customer.setId("customer0001");
         repository.saveCustomer(customer);
 
+        Customer customer2 = new Customer();
+        customer2.setId("customer0002");
+        repository.saveCustomer(customer2);
+
         Product product = new Product();
         product.addUnits(30);
         product.setPrice(10.00);
@@ -68,24 +72,44 @@ public class AddProductToCartTest {
         Assert.assertEquals(400.00, readCart.getTotalPrice(), 0.001);
     }
 
+    @Test
+    public void addAProduct_TwoCustomers() {
+        addToCart.setCustomer("customer0001");
+        addToCart.setProductAndQuantity("product0001", 10);
+        addToCart.execute();
+
+        AddProductToCart addToCart2;
+        addToCart2 = new AddProductToCart(this.repository);
+        addToCart2.setCustomer("customer0002");
+        addToCart2.setProductAndQuantity("product0001", 20);
+        addToCart2.execute();
+
+        readCart.setCustomer("customer0001");
+        Assert.assertEquals(100.0, readCart.getTotalPrice(), 0.001);
+
+        readCart.setCustomer("customer0002");
+        Assert.assertEquals(200.0, readCart.getTotalPrice(), 0.001);
+    }
+
 
     private static class FakeRepository implements Repository {
 
-        private Customer storedCustomer;
+        private ArrayList<Customer> storedCustomers = new ArrayList<Customer>();
         private ArrayList<Product> storedProducts = new ArrayList<Product>();
 
         @Override
         public Customer getCustomerById(String id) {
-            if (storedCustomer.getId().equalsIgnoreCase(id)) {
-                return storedCustomer;
-            } else {
-                throw new Repository.CustomerNotFound();
+            for (int i = 0; i < this.storedCustomers.size(); i++) {
+                if (storedCustomers.get(i).getId().equalsIgnoreCase(id)) {
+                    return this.storedCustomers.get(i);
+                }
             }
+            throw new Repository.CustomerNotFound();
         }
 
         @Override
         public void saveCustomer(Customer customer) {
-            this.storedCustomer = customer;
+            this.storedCustomers.add(customer);
         }
 
         @Override
